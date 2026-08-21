@@ -31,6 +31,14 @@ jobs:
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
+      - name: Register local tap in Homebrew
+        run: |
+          TAP_DIR="$(brew --repository vyogotech/tap)"
+          mkdir -p "$(dirname "$TAP_DIR")"
+          rm -rf "$TAP_DIR"
+          ln -s "$GITHUB_WORKSPACE" "$TAP_DIR"
+          brew trust vyogotech/tap
+
       - name: Build Formula & Generate Bottle
         id: bottle
         run: |
@@ -41,12 +49,12 @@ jobs:
           brew install mariadb redis node yarn python@3.14
 
           # Install and build bottle
-          brew install --build-bottle Formula/vybench.rb
+          brew install --build-bottle vyogotech/tap/vybench
 
           # Generate bottle tarball and json
           mkdir -p bottles
           cd bottles
-          brew bottle --json --root-url="$ROOT_URL" ../Formula/vybench.rb
+          brew bottle --json --root-url="$ROOT_URL" vyogotech/tap/vybench
 
       - name: Upload bottle artifact
         uses: actions/upload-artifact@v4
@@ -68,6 +76,13 @@ jobs:
 
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Register local tap in Homebrew
+        run: |
+          TAP_DIR="$(brew --repository vyogotech/tap)"
+          mkdir -p "$(dirname "$TAP_DIR")"
+          rm -rf "$TAP_DIR"
+          ln -s "$GITHUB_WORKSPACE" "$TAP_DIR"
 
       - name: Download all bottle artifacts
         uses: actions/download-artifact@v4

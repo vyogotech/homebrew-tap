@@ -40,8 +40,9 @@ class Vybench < Formula
 
   bottle do
     root_url "https://github.com/vyogotech/homebrew-tap/releases/download/v16.0.0"
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe: "807c33ded1a08bf65b1d810074e2a17398939ef3feabf52e98bfbcf55fcee6af"
+    rebuild 2
+    sha256 cellar: :any, arm64_sequoia: "bed55ebe72ae34daafd761ef8b12ea2951fcb99fc6478cbdb76d1a1c6251a34b"
+    sha256 cellar: :any, arm64_sonoma:  "80bf7cc6dbb79d8f71a0910a9fa0fc8ac86f1421c33224fc17326d39edfcf1a5"
   end
 
   # ── Build-time resources ──────────────────────────────────────────────────

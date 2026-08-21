@@ -101,14 +101,6 @@ jobs:
           brew bottle --merge --write *.json
           cp vybench.rb ../Formula/vybench.rb || cp ../Formula/vybench.rb .
 
-      - name: Commit and push updated formula
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/vybench.rb
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore: add bottles for ${{ inputs.tag || github.ref_name || 'v16.0.0' }}"
-          git push origin main
-
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -117,3 +109,14 @@ jobs:
           gh release view "$TAG" --repo vyogotech/homebrew-tap 2>/dev/null || \
             gh release create "$TAG" --repo vyogotech/homebrew-tap --title "Vybench $TAG" --notes "Pre-built binary bottles for Vybench $TAG"
           gh release upload "$TAG" all-bottles/*.bottle.tar.gz --clobber --repo vyogotech/homebrew-tap
+
+      - name: Commit and push updated formula
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git add Formula/vybench.rb
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: add bottles for ${{ inputs.tag || github.ref_name || 'v16.0.0' }}"
+          git push origin main
